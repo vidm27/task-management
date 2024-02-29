@@ -3,19 +3,29 @@ import BoardIcon from '@/shared/icons/BoardIcon.vue';
 import LogoLight from '@/shared/icons/LogoLight.vue';
 
 import { useBoardStore } from '@/shared/stores/board_store';
+import type {ColumnBoard} from '@/shared/types/columnBoard';
+import type {Board} from '@/shared/types/board';
 import { v4 as uuidv4 } from 'uuid';
 import { ref } from 'vue';
 
 const store = useBoardStore();
-interface Board {
-    id: string,
-    nameBoard: string,
-    boardColumn?: string[]
-}
 const board = ref<Board>({ id: '', nameBoard: '', boardColumn: [] });
 
-function addColumn(nameColumn: string) {
-    board.value.boardColumn?.push(nameColumn);
+function addColumn(nameColumn?: ColumnBoard) {
+    board.value.boardColumn?.push(nameColumn!);
+}
+
+function newBoard(boardName: string, columns?: ColumnBoard[]){
+    const id = uuidv4()
+    let columnBoard = columns?.length === 0 ? [] : columns;
+    store.addBoard(boardName, id, columnBoard!)
+    clearInput()
+}
+
+function clearInput(){
+    board.value.boardColumn = []
+    board.value.nameBoard = ''
+    board.value.id = ''
 }
 
 </script>
@@ -29,7 +39,7 @@ function addColumn(nameColumn: string) {
                 <LogoLight></LogoLight>
             </div>
             <div class="px-7 mb-3">
-                <span class="uppercase text-[#828FA3] text-xs tracking-[.15em]">All Boards(0)</span>
+                <span class="uppercase text-[#828FA3] text-xs tracking-[.15em]">All Boards({{ store.totalBoards }})</span>
             </div>
             <ul class="space-y-2 font-medium">
                 <li v-for="board in store.boards" :key="board.id">
@@ -61,7 +71,7 @@ function addColumn(nameColumn: string) {
                         <div class="w-full">
                             <label v-for="(boardColumn, index) in board.boardColumn" :key="index" for=""
                                 class="form-control w-full mb-3 flex-row gap-2">
-                                <input type="text" v-model="board.boardColumn![index]" name="" id=""
+                                <input type="text" v-model="board.boardColumn![index].title" name="" id=""
                                     placeholder="name column"
                                     class="input input-bordered w-full bg-[#2B2C37] focus:input-primary text-white">
                                 <div class="label">
@@ -76,7 +86,7 @@ function addColumn(nameColumn: string) {
                             </label>
                         </div>
                         <button type="button" class="btn bg-[#ffffff] text-[#635FC7] hover:bg-[#ffff] hover:text-[#635FC7]"
-                            v-on:click="addColumn('')">
+                            v-on:click="addColumn({id: uuidv4(), title: ''})">
                             <svg class="fill-[#635FC7] hover:fill-[#ffff]" width="12" height="12"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path d="M7.368 12V7.344H12V4.632H7.368V0H4.656v4.632H0v2.712h4.656V12z" />
@@ -84,19 +94,21 @@ function addColumn(nameColumn: string) {
                             <span>Add New Column</span>
                         </button>
                     </div>
-                    <form method="dialog" class="modal-backdrop">
-                        <button>close</button>
-                        <div class="modal-action">
-                            <button type="button"
-                                class="btn bg-[#635FC7] text-[#ffff] hover:bg-[#635FC7] hover:text-[#ffff] w-full"
-                                v-on:click="store.addBoard(board.nameBoard, uuidv4(), board.boardColumn!)">
-                                <span>Create New Board</span>
-                            </button>
-                        </div>
-                    </form>
+                    <div class="modal-action">
+                        <button type="button"
+                            class="btn bg-[#635FC7] text-[#ffff] hover:bg-[#635FC7] hover:text-[#ffff] w-full"
+                            v-on:click="newBoard(board.nameBoard, board.boardColumn!)">
+                            <span>Create New Board</span>
+                        </button>
+                    </div>
                 </div>
+                <form method="dialog" class="modal-backdrop">
+                    <button>close</button>
+
+                </form>
             </dialog>
         </div>
+
     </aside>
 </template>
 
