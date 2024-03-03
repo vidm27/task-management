@@ -12,6 +12,7 @@ from pydantic_settings import BaseSettings
 
 class Setting(BaseSettings):
     API_V1_STR: str = "/api"
+    VERSION:str ='0.0.1'
     SECRET_KEY: str = secrets.token_urlsafe(23)
     # 60 minutes * 24 hours * 8 days = 8 days
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
@@ -57,11 +58,11 @@ def path_upload_dir() -> Path:
 
 setting = Setting(
     SERVER_HOST="http://127.0.0.1",
-    SERVER_NAME="waster-way",
-    PROJECT_NAME="waster-way",
-    MONGO_USERNAME="waste_way",
-    MONGO_PASSWORD="waste_way",
-    MONGO_DATABASE="waste_way",
+    SERVER_NAME="task-managment",
+    PROJECT_NAME="task-managment",
+    MONGO_USERNAME="task_managment",
+    MONGO_PASSWORD="task_managment",
+    MONGO_DATABASE="task_managment",
     MONGO_PORT="27017",
     MONGO_HOST="127.0.0.1",
     MONGO_QUERY="authSource=admin",
