@@ -1,9 +1,12 @@
 from contextlib import asynccontextmanager
 
+from beanie import init_beanie
 from fastapi import FastAPI
 from motor.motor_asyncio import AsyncIOMotorClient
+
 from .setting import setting, logger
-from beanie import init_beanie
+
+
 @asynccontextmanager
 async def connect_to_db(app: FastAPI):
     app.db = AsyncIOMotorClient(setting.MONGO_DATABASE_URI).task_management

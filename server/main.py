@@ -1,7 +1,8 @@
 from fastapi import FastAPI
-from core.setting import setting
-from core.db_connection import connect_to_db
 from fastapi.middleware.cors import CORSMiddleware
+
+from core.db_connection import connect_to_db
+from core.setting import setting
 
 app = FastAPI(
     title=setting.PROJECT_NAME,
